@@ -1,3 +1,4 @@
 export const Global = {
-  URL: "http://localhost:3001",
+  URL1: "http://localhost:3001",
+  URL: "https://boxtech-production.up.railway.app",
 };
