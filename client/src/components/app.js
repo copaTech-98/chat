@@ -2,35 +2,39 @@ import io from "socket.io-client";
 import { Global } from "../Global";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import Toast from "./Toast/Toast";
+
 import { getMessage } from "../utils/middleware/getMessage.js";
 const socket = io(Global.URL);
 
 export default function App() {
   const [form, setForm] = useState({
-    userName: "",
-    message: "",
+    type: "",
+    notification: "",
   });
   const [messages, setMessages] = useState([]);
   const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
-    socket.on("message", getMessage);
-    return () => socket.off("message", getMessage);
+    socket.on("notification", (data) => console.log(data));
+    return () => socket.off("notification", (data) => console.log(data));
   }, []);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     console.log(form);
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    socket.emit("message", JSON.stringify(form));
+    socket.emit("notification", JSON.stringify(form));
     setForm({ ...form, message: "" });
   };
+
   const handleSaveUser = () => {
     localStorage.setItem("user", form.userName);
     setDisabled(true);
   };
+
   return (
     <Box display={"flex"} flexDirection="column" gap={"20px"} padding="20px">
       <Box></Box>
@@ -45,9 +49,9 @@ export default function App() {
         <Typography>Chat: {form.userName}</Typography>
         <TextField
           onChange={handleChange}
-          name="userName"
+          name="type"
           disabled={disabled}
-          value={form.userName}
+          value={form.type}
           label="Username"
           sx={{ width: "100%" }}
         />
@@ -56,8 +60,8 @@ export default function App() {
         </Button>
         <TextField
           onChange={handleChange}
-          name="message"
-          value={form.message}
+          name="notify"
+          value={form.notify}
           multiline={true}
           label="Message"
           sx={{ width: "100%" }}
